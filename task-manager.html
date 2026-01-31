@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Daily Task & Project Manager - EazyAdmin</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+  <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
+
+  <style>
+    .task-card {
+      transition: transform 0.2s;
+      border: none;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .task-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+    .task-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    .urgent-icon {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+      color: white;
+    }
+    .delayed-icon {
+      background: linear-gradient(135deg, #feca57, #ff9ff3);
+      color: white;
+    }
+    .attention-icon {
+      background: linear-gradient(135deg, #48dbfb, #0abde3);
+      color: white;
+    }
+    .priority-icon {
+      background: linear-gradient(135deg, #ff9ff3, #ee5a24);
+      color: white;
+    }
+    .summary-icon {
+      background: linear-gradient(135deg, #54a0ff, #5f27cd);
+      color: white;
+    }
+    .voice-icon {
+      background: linear-gradient(135deg, #00d2d3, #54a0ff);
+      color: white;
+    }
+    .priority-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .priority-high {
+      background: #dc3545;
+      color: white;
+    }
+    .priority-medium {
+      background: #ffc107;
+      color: #212529;
+    }
+    .priority-low {
+      background: #28a745;
+      color: white;
+    }
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .status-urgent {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    .status-delayed {
+      background: #fff3cd;
+      color: #856404;
+    }
+    .status-attention {
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+    .task-table {
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .task-table thead {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+    }
+    .task-row:hover {
+      background-color: #f8f9fa;
+      cursor: pointer;
+    }
+    .assistant-section {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border-radius: 15px;
+      padding: 25px;
+    }
+    .voice-section {
+      background: linear-gradient(135deg, #00d2d3, #54a0ff);
+      color: white;
+      border-radius: 15px;
+      padding: 25px;
+    }
+    .stats-number {
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .task-timeline {
+      position: relative;
+      padding-left: 30px;
+    }
+    .task-timeline::before {
+      content: '';
+      position: absolute;
+      left: 10px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: rgba(255,255,255,0.3);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -25px;
+      top: 5px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: white;
+    }
+    .notification-settings {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 15px;
+    }
+    .voice-wave {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      height: 40px;
+    }
+    .voice-bar {
+      width: 4px;
+      background: white;
+      border-radius: 2px;
+      animation: wave 1s ease-in-out infinite;
+    }
+    .voice-bar:nth-child(1) { animation-delay: 0s; height: 10px; }
+    .voice-bar:nth-child(2) { animation-delay: 0.1s; height: 20px; }
+    .voice-bar:nth-child(3) { animation-delay: 0.2s; height: 15px; }
+    .voice-bar:nth-child(4) { animation-delay: 0.3s; height: 25px; }
+    .voice-bar:nth-child(5) { animation-delay: 0.4s; height: 18px; }
+    
+    @keyframes wave {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(1.5); }
+    }
+    
+    .action-buttons .btn {
+      margin-right: 5px;
+    }
+    
+    .task-completion {
+      font-size: 0.9rem;
+      color: #6c757d;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="index.html" class="logo d-flex align-items-center">
+        <img src="assets/img/logo.png" alt="">
+        <span class="d-none d-lg-block">EazyAdmin</span>
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div>
+
+    <div class="search-bar">
+      <form class="search-form d-flex align-items-center" method="POST" action="#">
+        <input type="text" name="query" placeholder="Search tasks, projects..." title="Enter search keyword">
+        <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+      </form>
+    </div>
+
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+
+        <li class="nav-item dropdown">
+          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+            <i class="bi bi-bell"></i>
+            <span class="badge bg-primary badge-number">12</span>
+          </a>
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+            <li class="dropdown-header">
+              You have 12 new notifications
+              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-exclamation-triangle text-danger"></i>
+              <div>
+                <h4>Urgent Task Alert</h4>
+                <p>Project deadline approaching in 2 hours</p>
+                <p>5 min. ago</p>
+              </div>
+            </li>
+          </ul>
+        </li>
+
+        <li class="nav-item dropdown pe-3">
+          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+            <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+            <span class="d-none d-md-block dropdown-toggle ps-2">Admin</span>
+          </a>
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+            <li class="dropdown-header">
+              <h6>Admin User</h6>
+              <span>Administrator</span>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                <i class="bi bi-person"></i>
+                <span>My Profile</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="#">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Sign Out</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+      </ul>
+    </nav>
+
+  </header>
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="index.html">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="task-manager.html">
+          <i class="bi bi-clipboard-check"></i>
+          <span>Task Manager</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="payment-tracking.html">
+          <i class="bi bi-credit-card"></i>
+          <span>Payment Tracking</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="permit-tracking.html">
+          <i class="bi bi-file-earmark-text"></i>
+          <span>Permit & Documents</span>
+        </a>
+      </li>
+
+    </ul>
+
+  </aside>
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Daily Task & Project Manager</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item active">Task Manager</li>
+        </ol>
+      </nav>
+    </div>
+
+    <section class="section dashboard">
+      
+      <!-- Task Statistics Cards -->
+      <div class="row">
+        <div class="col-lg-2 col-md-4 col-6 mb-3">
+          <div class="card task-card">
+            <div class="card-body">
+              <div class="d-flex flex-column align-items-center text-center">
+                <div class="task-icon urgent-icon mb-3">
+                  <i class="bi bi-exclamation-triangle"></i>
+                </div>
+                <h6 class="card-title mb-1">Urgent</h6>
+                <div class="stats-number text-danger">5</div>
+                <small class="text-muted">Today</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-6 mb-3">
+          <div class="card task-card">
+            <div class="card-body">
+              <div class="d-flex flex-column align-items-center text-center">
+                <div class="task-icon delayed-icon mb-3">
+                  <i class="bi bi-clock-history"></i>
+                </div>
+                <h6 class="card-title mb-1">Delayed</h6>
+                <div class="stats-number text-warning">8</div>
+                <small class="text-muted">Projects</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-6 mb-3">
+          <div class="card task-card">
+            <div class="card-body">
+              <div class="d-flex flex-column align-items-center text-center">
+                <div class="task-icon attention-icon mb-3">
+                  <i class="bi bi-eye"></i>
+                </div>
+                <h6 class="card-title mb-1">Attention</h6>
+                <div class="stats-number text-info">12</div>
+                <small class="text-muted">Needed</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-6 mb-3">
+          <div class="card task-card">
+            <div class="card-body">
+              <div class="d-flex flex-column align-items-center text-center">
+                <div class="task-icon priority-icon mb-3">
+                  <i class="bi bi-sort-numeric-down"></i>
+                </div>
+                <h6 class="card-title mb-1">Prioritized</h6>
+                <div class="stats-number text-primary">25</div>
+                <small class="text-muted">Tasks</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-6 mb-3">
+          <div class="card task-card">
+            <div class="card-body">
+              <div class="d-flex flex-column align-items-center text-center">
+                <div class="task-icon summary-icon mb-3">
+                  <i class="bi bi-envelope"></i>
+                </div>
+                <h6 class="card-title mb-1">Summaries</h6>
+                <div class="stats-number text-success">45</div>
+                <small class="text-muted">Sent</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-6 mb-3">
+          <div class="card task-card">
+            <div class="card-body">
+              <div class="d-flex flex-column align-items-center text-center">
+                <div class="task-icon voice-icon mb-3">
+                  <i class="bi bi-mic"></i>
+                </div>
+                <h6 class="card-title mb-1">Voice</h6>
+                <div class="stats-number text-info">18</div>
+                <small class="text-muted">Reminders</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Personal Assistant Section -->
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="assistant-section">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="text-white mb-0">
+                <i class="bi bi-robot me-2"></i>Your Personal Assistant
+              </h5>
+              <div>
+                <span class="badge bg-light text-dark">Online</span>
+                <button class="btn btn-light btn-sm ms-2">
+                  <i class="bi bi-gear"></i> Settings
+                </button>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-8">
+                <div class="task-timeline">
+                  <h6 class="text-white mb-3">Today's Priority Tasks</h6>
+                  <div class="timeline-item">
+                    <div class="bg-white text-dark p-3 rounded">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                          <strong>Complete customer portal integration</strong>
+                          <div class="task-completion">Due in 2 hours • High Priority</div>
+                        </div>
+                        <span class="priority-badge priority-high">URGENT</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="bg-white text-dark p-3 rounded">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                          <strong>Review payment tracking reports</strong>
+                          <div class="task-completion">Due in 4 hours • Medium Priority</div>
+                        </div>
+                        <span class="priority-badge priority-medium">MEDIUM</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="bg-white text-dark p-3 rounded">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                          <strong>Update permit documentation</strong>
+                          <div class="task-completion">Due in 6 hours • Low Priority</div>
+                        </div>
+                        <span class="priority-badge priority-low">LOW</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="text-center">
+                  <h6 class="text-white mb-3">Daily Progress</h6>
+                  <div class="stats-number">75%</div>
+                  <small>15 of 20 tasks done</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Today's Urgent Projects -->
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title">
+                  <i class="bi bi-exclamation-triangle text-danger me-2"></i>Today's Urgent Projects
+                </h5>
+                <div>
+                  <button class="btn btn-sm btn-danger">
+                    <i class="bi bi-plus"></i> Add Urgent
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger">
+                    <i class="bi bi-download"></i> Export
+                  </button>
+                </div>
+              </div>
+              
+              <div class="table-responsive">
+                <table class="table task-table">
+                  <thead>
+                    <tr>
+                      <th>Project</th>
+                      <th>Client</th>
+                      <th>Deadline</th>
+                      <th>Priority</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="task-row">
+                      <td>
+                        <div>
+                          <strong>Customer Portal Development</strong>
+                          <div class="task-completion">Frontend integration pending</div>
+                        </div>
+                      </td>
+                      <td>EazyMovers</td>
+                      <td>Today, 6:00 PM</td>
+                      <td><span class="priority-badge priority-high">HIGH</span></td>
+                      <td><span class="status-badge status-urgent">In Progress</span></td>
+                      <td>
+                        <div class="action-buttons">
+                          <button class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i>
+                          </button>
+                          <button class="btn btn-sm btn-outline-success">
+                            <i class="bi bi-check"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Daily Summary & Voice Reminders -->
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title">
+                  <i class="bi bi-envelope text-success me-2"></i>Daily Summary Settings
+                </h5>
+                <button class="btn btn-sm btn-success">
+                  <i class="bi bi-send"></i> Test Now
+                </button>
+              </div>
+              
+              <div class="notification-settings">
+                <h6 class="text-dark mb-3">Notification Preferences</h6>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="emailSummary" checked>
+                      <label class="form-check-label text-dark" for="emailSummary">
+                        <i class="bi bi-envelope me-2"></i>Email Summary
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="whatsappSummary" checked>
+                      <label class="form-check-label text-dark" for="whatsappSummary">
+                        <i class="bi bi-whatsapp me-2"></i>WhatsApp Summary
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="voice-section">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="text-white mb-0">
+                <i class="bi bi-mic me-2"></i>Voice Reminders
+              </h5>
+              <button class="btn btn-light btn-sm" id="voiceTestBtn">
+                <i class="bi bi-play"></i> Test Voice
+              </button>
+            </div>
+            
+            <div class="text-center mb-4">
+              <i class="bi bi-mic-fill" style="font-size: 3rem;" id="micIcon"></i>
+            </div>
+            
+            <div class="notification-settings">
+              <h6 class="text-white mb-3">Voice Settings</h6>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="voiceEnabled" checked>
+                    <label class="form-check-label text-white" for="voiceEnabled">
+                      Enable voice reminders
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="voiceUrgent" checked>
+                    <label class="form-check-label text-white" for="voiceUrgent">
+                      Urgent tasks only
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/main.js"></script>
+
+  <script>
+    // Voice functionality
+    let speechSynthesis = window.speechSynthesis;
+    let speaking = false;
+
+    document.getElementById('voiceTestBtn').addEventListener('click', function() {
+      const message = "This is a test of your voice reminder system. You have urgent tasks that need your attention.";
+      speak(message);
+    });
+
+    function speak(message) {
+      if (speaking) {
+        speechSynthesis.cancel();
+        speaking = false;
+        return;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(message);
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      utterance.volume = 0.7;
+
+      utterance.onstart = function() {
+        speaking = true;
+        document.getElementById('voiceTestBtn').innerHTML = '<i class="bi bi-stop"></i> Stop';
+      };
+
+      utterance.onend = function() {
+        speaking = false;
+        document.getElementById('voiceTestBtn').innerHTML = '<i class="bi bi-play"></i> Test Voice';
+      };
+
+      speechSynthesis.speak(utterance);
+    }
+  </script>
+
+</body>
+
+</html>

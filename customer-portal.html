@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Customer Portal - EazyMovers</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+  <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
+
+  <style>
+    .dashboard-card {
+      transition: transform 0.2s;
+    }
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+    }
+    .shipment-progress {
+      position: relative;
+    }
+    .chat-container {
+      height: 400px;
+      overflow-y: auto;
+    }
+    .chat-message {
+      margin-bottom: 15px;
+    }
+    .bot-message {
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      padding: 10px;
+    }
+    .user-message {
+      background-color: #007bff;
+      color: white;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: right;
+    }
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background-color: #dc3545;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+    .document-item {
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 10px;
+      transition: all 0.2s;
+    }
+    .document-item:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .upload-area {
+      border: 2px dashed #007bff;
+      border-radius: 10px;
+      padding: 40px;
+      text-align: center;
+      background-color: #f8f9fa;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .upload-area:hover {
+      background-color: #e9ecef;
+      border-color: #0056b3;
+    }
+    .progress-step {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .progress-step.active {
+      color: #007bff;
+    }
+    .progress-step.completed {
+      color: #28a745;
+    }
+    .invoice-item {
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .reminder-item {
+      border-left: 4px solid #ffc107;
+      background-color: #fff3cd;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 0 8px 8px 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="index.html" class="logo d-flex align-items-center">
+        <img src="assets/img/logo.png" alt="">
+        <span class="d-none d-lg-block">EazyMovers</span>
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+
+    <div class="search-bar">
+      <form class="search-form d-flex align-items-center" method="POST" action="#">
+        <input type="text" name="query" placeholder="Search shipments, invoices..." title="Enter search keyword">
+        <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+      </form>
+    </div><!-- End Search Bar -->
+
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+
+        <li class="nav-item dropdown">
+          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+            <i class="bi bi-bell"></i>
+            <span class="badge bg-primary badge-number">3</span>
+          </a><!-- End Notification Icon -->
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+            <li class="dropdown-header">
+              You have 3 new notifications
+              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-truck text-success"></i>
+              <div>
+                <h4>Shipment Delivered</h4>
+                <p>Your shipment #12345 has been delivered successfully</p>
+                <p>2 hours ago</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-file-invoice text-primary"></i>
+              <div>
+                <h4>New Invoice Available</h4>
+                <p>Invoice #INV-2024-001 is ready for download</p>
+                <p>5 hours ago</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-clock text-warning"></i>
+              <div>
+                <h4>Payment Reminder</h4>
+                <p>Payment for shipment #12344 is due tomorrow</p>
+                <p>1 day ago</p>
+              </div>
+            </li>
+          </ul><!-- End Notification Dropdown Items -->
+        </li><!-- End Notification Nav -->
+
+        <li class="nav-item dropdown pe-3">
+
+          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+            <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+            <span class="d-none d-md-block dropdown-toggle ps-2">John Doe</span>
+          </a><!-- End Profile Iamge Icon -->
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+            <li class="dropdown-header">
+              <h6>John Doe</h6>
+              <span>Customer</span>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                <i class="bi bi-person"></i>
+                <span>My Profile</span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="#">
+                <i class="bi bi-gear"></i>
+                <span>Account Settings</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="#">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Sign Out</span>
+              </a>
+            </li>
+          </ul><!-- End Profile Dropdown Items -->
+        </li><!-- End Profile Nav -->
+
+      </ul>
+    </nav><!-- End Icons Navigation -->
+
+  </header><!-- End Header -->
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="customer-portal.html">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li><!-- End Dashboard Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#components-nav">
+          <i class="bi bi-truck"></i><span>Shipments</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="components-nav" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="#" class="active">
+              <i class="bi bi-circle"></i><span>Track Shipment</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="bi bi-circle"></i><span>Shipment History</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="bi bi-circle"></i><span>New Shipment</span>
+            </a>
+          </li>
+        </ul>
+      </li><!-- End Shipments Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#forms-nav">
+          <i class="bi bi-file-earmark-text"></i><span>Documents</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="forms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="#">
+              <i class="bi bi-circle"></i><span>Upload Documents</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="bi bi-circle"></i><span>My Documents</span>
+            </a>
+          </li>
+        </ul>
+      </li><!-- End Documents Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#tables-nav">
+          <i class="bi bi-file-invoice-dollar"></i><span>Payments</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="tables-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="#">
+              <i class="bi bi-circle"></i><span>Payment Status</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="bi bi-circle"></i><span>Invoices</span>
+            </a>
+          </li>
+        </ul>
+      </li><!-- End Payments Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="manual-payment.html">
+          <i class="bi bi-credit-card"></i>
+          <span>Manual Payment</span>
+        </a>
+      </li><!-- End Manual Payment Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#">
+          <i class="bi bi-chat-dots"></i>
+          <span>Support Chat</span>
+        </a>
+      </li><!-- End Support Nav -->
+
+    </ul>
+
+  </aside><!-- End Sidebar-->
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Customer Portal</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section dashboard">
+      <div class="row">
+
+        <!-- Welcome Card -->
+        <div class="col-12">
+          <div class="card info-card customers-card">
+            <div class="card-body">
+              <h5 class="card-title">Welcome back, John! <span>|</span> <span class="text-muted">Last login: 2 hours ago</span></h5>
+              <p class="card-text">Here's an overview of your shipments and account status.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="col-lg-3 col-md-6">
+          <div class="card info-card sales-card dashboard-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span>Active Shipments</span>
+              </h5>
+
+              <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi bi-truck"></i>
+                </div>
+                <div class="ps-3">
+                  <h6>3</h6>
+                  <span class="text-success small pt-1 fw-bold">2 in transit</span>
+                  <span class="text-muted small pt-2 ps-1">1 pending</span>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div><!-- End Active Shipments Card -->
+
+        <div class="col-lg-3 col-md-6">
+          <div class="card info-card revenue-card dashboard-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span>Payments</span>
+              </h5>
+
+              <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi bi-credit-card"></i>
+                </div>
+                <div class="ps-3">
+                  <h6>$1,245</h6>
+                  <span class="text-success small pt-1 fw-bold">Paid</span>
+                  <span class="text-muted small pt-2 ps-1">$350 pending</span>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div><!-- End Payments Card -->
+
+        <div class="col-lg-3 col-md-6">
+          <div class="card info-card customers-card dashboard-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span>Documents</span>
+              </h5>
+
+              <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi bi-file-earmark-text"></i>
+                </div>
+                <div class="ps-3">
+                  <h6>12</h6>
+                  <span class="text-muted small pt-1 fw-bold">Total uploaded</span>
+                  <span class="text-success small pt-2 ps-1">All verified</span>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div><!-- End Documents Card -->
+
+        <div class="col-lg-3 col-md-6">
+          <div class="card info-card revenue-card dashboard-card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <span>Support</span>
+              </h5>
+
+              <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi bi-chat-dots"></i>
+                </div>
+                <div class="ps-3">
+                  <h6>Online</h6>
+                  <span class="text-success small pt-1 fw-bold">Chat available</span>
+                  <span class="text-muted small pt-2 ps-1">Avg response: 2 min</span>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div><!-- End Support Card -->
+
+      </div>
+
+      <!-- Shipment Progress Section -->
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Recent Shipments</h5>
+              
+              <div class="shipment-item mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h6>Shipment #12345</h6>
+                  <span class="badge bg-success">In Transit</span>
+                </div>
+                
+                <div class="shipment-progress">
+                  <div class="progress-step completed">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <span>Order Placed - Jan 25, 2024</span>
+                  </div>
+                  <div class="progress-step completed">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <span>Picked Up - Jan 26, 2024</span>
+                  </div>
+                  <div class="progress-step active">
+                    <i class="bi bi-truck me-2"></i>
+                    <span>In Transit - Jan 28, 2024</span>
+                  </div>
+                  <div class="progress-step">
+                    <i class="bi bi-circle me-2"></i>
+                    <span>Out for Delivery</span>
+                  </div>
+                  <div class="progress-step">
+                    <i class="bi bi-circle me-2"></i>
+                    <span>Delivered</span>
+                  </div>
+                </div>
+                
+                <div class="progress mt-3">
+                  <div class="progress-bar bg-success" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">60%</div>
+                </div>
+              </div>
+
+              <div class="shipment-item mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h6>Shipment #12344</h6>
+                  <span class="badge bg-warning">Pending Pickup</span>
+                </div>
+                
+                <div class="shipment-progress">
+                  <div class="progress-step completed">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <span>Order Placed - Jan 29, 2024</span>
+                  </div>
+                  <div class="progress-step">
+                    <i class="bi bi-circle me-2"></i>
+                    <span>Pending Pickup</span>
+                  </div>
+                  <div class="progress-step">
+                    <i class="bi bi-circle me-2"></i>
+                    <span>In Transit</span>
+                  </div>
+                  <div class="progress-step">
+                    <i class="bi bi-circle me-2"></i>
+                    <span>Out for Delivery</span>
+                  </div>
+                  <div class="progress-step">
+                    <i class="bi bi-circle me-2"></i>
+                    <span>Delivered</span>
+                  </div>
+                </div>
+                
+                <div class="progress mt-3">
+                  <div class="progress-bar bg-warning" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">20%</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Status -->
+        <div class="col-lg-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Payment Status</h5>
+              
+              <div class="invoice-item">
+                <div>
+                  <h6>Invoice #INV-2024-001</h6>
+                  <small class="text-muted">Shipment #12345</small>
+                </div>
+                <div class="text-end">
+                  <span class="badge bg-success">Paid</span>
+                  <div><small>$845.00</small></div>
+                </div>
+              </div>
+
+              <div class="invoice-item">
+                <div>
+                  <h6>Invoice #INV-2024-002</h6>
+                  <small class="text-muted">Shipment #12344</small>
+                </div>
+                <div class="text-end">
+                  <span class="badge bg-warning">Pending</span>
+                  <div><small>$400.00</small></div>
+                </div>
+              </div>
+
+              <div class="invoice-item">
+                <div>
+                  <h6>Invoice #INV-2024-003</h6>
+                  <small class="text-muted">Shipment #12346</small>
+                </div>
+                <div class="text-end">
+                  <span class="badge bg-success">Paid</span>
+                  <div><small>$350.00</small></div>
+                </div>
+              </div>
+
+              <button class="btn btn-primary w-100 mt-3">
+                <i class="bi bi-download me-2"></i>Download All Invoices
+              </button>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Documents and Support Section -->
+      <div class="row mt-4">
+        <!-- Document Upload -->
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Document Upload</h5>
+              
+              <div class="upload-area" onclick="document.getElementById('documentUpload').click()">
+                <i class="bi bi-cloud-upload" style="font-size: 3rem; color: #007bff;"></i>
+                <h6 class="mt-3">Click to upload or drag and drop</h6>
+                <p class="text-muted">PDF, DOC, DOCX, JPG, PNG (MAX. 10MB)</p>
+                <input type="file" id="documentUpload" style="display: none;" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+              </div>
+
+              <h6 class="mt-4">Recent Documents</h6>
+              
+              <div class="document-item">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <i class="bi bi-file-pdf text-danger me-2"></i>
+                    <span>Shipping_Label_12345.pdf</span>
+                  </div>
+                  <div>
+                    <small class="text-muted">2.3 MB</small>
+                    <button class="btn btn-sm btn-outline-primary ms-2">
+                      <i class="bi bi-download"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="document-item">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <i class="bi bi-file-image text-success me-2"></i>
+                    <span>Package_Photo_1.jpg</span>
+                  </div>
+                  <div>
+                    <small class="text-muted">1.8 MB</small>
+                    <button class="btn btn-sm btn-outline-primary ms-2">
+                      <i class="bi bi-download"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="document-item">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <i class="bi bi-file-word text-primary me-2"></i>
+                    <span>Customs_Form.docx</span>
+                  </div>
+                  <div>
+                    <small class="text-muted">856 KB</small>
+                    <button class="btn btn-sm btn-outline-primary ms-2">
+                      <i class="bi bi-download"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Support Chat -->
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Support Chat</h5>
+              
+              <div class="chat-container border rounded p-3 mb-3">
+                <div class="chat-message">
+                  <div class="bot-message">
+                    <strong>Support Bot</strong>
+                    <p>Hello! I'm here to help you with your shipments and account. How can I assist you today?</p>
+                    <small class="text-muted">10:30 AM</small>
+                  </div>
+                </div>
+
+                <div class="chat-message">
+                  <div class="user-message">
+                    <p>Hi, I need to track my shipment #12345</p>
+                    <small class="text-muted">10:32 AM</small>
+                  </div>
+                </div>
+
+                <div class="chat-message">
+                  <div class="bot-message">
+                    <strong>Support Bot</strong>
+                    <p>I can help you with that! Your shipment #12345 is currently in transit. It was picked up on January 26, 2024 and is expected to be delivered by January 30, 2024. Current location: Distribution Center, Chicago.</p>
+                    <small class="text-muted">10:32 AM</small>
+                  </div>
+                </div>
+
+                <div class="chat-message">
+                  <div class="user-message">
+                    <p>Thank you! Can I change the delivery address?</p>
+                    <small class="text-muted">10:35 AM</small>
+                  </div>
+                </div>
+
+                <div class="chat-message">
+                  <div class="bot-message">
+                    <strong>Support Bot</strong>
+                    <p>Yes, you can change the delivery address. Since your shipment is still in transit, we can update the delivery address. Please provide the new delivery address and I'll help you process the change.</p>
+                    <small class="text-muted">10:35 AM</small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Type your message..." id="chatInput">
+                <button class="btn btn-primary" type="button" id="sendBtn">
+                  <i class="bi bi-send"></i> Send
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Automated Reminders Section -->
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Automated Reminders</h5>
+              
+              <div class="reminder-item">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h6><i class="bi bi-exclamation-triangle text-warning me-2"></i>Payment Due Tomorrow</h6>
+                    <p class="mb-0">Payment for shipment #12344 ($400.00) is due tomorrow. Please complete the payment to avoid delays.</p>
+                  </div>
+                  <button class="btn btn-warning btn-sm">Pay Now</button>
+                </div>
+              </div>
+
+              <div class="reminder-item">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h6><i class="bi bi-file-text text-info me-2"></i>Document Required</h6>
+                    <p class="mb-0">Please upload the customs declaration form for shipment #12346 to avoid processing delays.</p>
+                  </div>
+                  <button class="btn btn-info btn-sm">Upload Document</button>
+                </div>
+              </div>
+
+              <div class="reminder-item">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h6><i class="bi bi-truck text-success me-2"></i>Delivery Scheduled</h6>
+                    <p class="mb-0">Your shipment #12345 is scheduled for delivery tomorrow between 9 AM - 12 PM. Please ensure someone is available.</p>
+                  </div>
+                  <button class="btn btn-success btn-sm">Track Live</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+    <div class="copyright">
+      &copy; Copyright <strong><span>EazyMovers</span></strong>. All Rights Reserved
+    </div>
+    <div class="credits">
+      Designed by <a href="#">EazyMovers Team</a>
+    </div>
+  </footer><!-- End Footer -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/chart.js/chart.umd.js"></script>
+  <script src="assets/vendor/echarts/echarts.min.js"></script>
+  <script src="assets/vendor/quill/quill.js"></script>
+  <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="assets/vendor/tinymce/tinymce.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="assets/js/main.js"></script>
+
+  <script>
+    // Chat functionality
+    document.getElementById('sendBtn').addEventListener('click', function() {
+      const input = document.getElementById('chatInput');
+      const message = input.value.trim();
+      
+      if (message) {
+        const chatContainer = document.querySelector('.chat-container');
+        const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        // Add user message
+        const userMessage = document.createElement('div');
+        userMessage.className = 'chat-message';
+        userMessage.innerHTML = `
+          <div class="user-message">
+            <p>${message}</p>
+            <small class="text-muted">${timestamp}</small>
+          </div>
+        `;
+        chatContainer.appendChild(userMessage);
+        
+        // Clear input
+        input.value = '';
+        
+        // Simulate bot response
+        setTimeout(() => {
+          const botMessage = document.createElement('div');
+          botMessage.className = 'chat-message';
+          botMessage.innerHTML = `
+            <div class="bot-message">
+              <strong>Support Bot</strong>
+              <p>Thank you for your message. I'm processing your request and will get back to you shortly.</p>
+              <small class="text-muted">${timestamp}</small>
+            </div>
+          `;
+          chatContainer.appendChild(botMessage);
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        }, 1000);
+        
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+    });
+
+    // Enter key to send message
+    document.getElementById('chatInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('sendBtn').click();
+      }
+    });
+
+    // File upload functionality
+    document.getElementById('documentUpload').addEventListener('change', function(e) {
+      const files = e.target.files;
+      if (files.length > 0) {
+        // Here you would typically handle the file upload
+        console.log('Files selected:', files);
+        
+        // Show success message
+        const uploadArea = document.querySelector('.upload-area');
+        const originalContent = uploadArea.innerHTML;
+        uploadArea.innerHTML = `
+          <i class="bi bi-check-circle" style="font-size: 3rem; color: #28a745;"></i>
+          <h6 class="mt-3">Files uploaded successfully!</h6>
+          <p class="text-muted">${files.length} file(s) uploaded</p>
+        `;
+        
+        setTimeout(() => {
+          uploadArea.innerHTML = originalContent;
+        }, 3000);
+      }
+    });
+
+    // Drag and drop functionality
+    const uploadArea = document.querySelector('.upload-area');
+    
+    uploadArea.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      this.style.backgroundColor = '#e9ecef';
+    });
+    
+    uploadArea.addEventListener('dragleave', function(e) {
+      e.preventDefault();
+      this.style.backgroundColor = '#f8f9fa';
+    });
+    
+    uploadArea.addEventListener('drop', function(e) {
+      e.preventDefault();
+      this.style.backgroundColor = '#f8f9fa';
+      
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        document.getElementById('documentUpload').files = files;
+        const event = new Event('change', { bubbles: true });
+        document.getElementById('documentUpload').dispatchEvent(event);
+      }
+    });
+  </script>
+
+</body>
+
+</html>

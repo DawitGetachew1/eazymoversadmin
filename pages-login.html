@@ -64,7 +64,17 @@
                     <p class="text-center small">Enter your username & password to login</p>
                   </div>
 
-                  <form class="row g-3 needs-validation" novalidate>
+                  <form class="row g-3 needs-validation" id="loginForm" novalidate>
+
+                    <div class="col-12">
+                      <label for="userType" class="form-label">Login Type</label>
+                      <select class="form-select" id="userType" name="userType" required>
+                        <option value="">Select login type...</option>
+                        <option value="admin">Admin Login</option>
+                        <option value="user">User Login</option>
+                      </select>
+                      <div class="invalid-feedback">Please select a login type.</div>
+                    </div>
 
                     <div class="col-12">
                       <label for="yourUsername" class="form-label">Username</label>
@@ -129,6 +139,40 @@
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const userType = document.getElementById('userType').value;
+      const username = document.getElementById('yourUsername').value;
+      const password = document.getElementById('yourPassword').value;
+      
+      if (!userType || !username || !password) {
+        alert('Please fill in all fields');
+        return;
+      }
+      
+      // Simple validation logic (in real app, this would be server-side)
+      if (userType === 'admin') {
+        // Admin credentials check (simplified)
+        if (username === 'admin' && password === 'admin123') {
+          alert('Admin login successful!');
+          window.location.href = 'index.html';
+        } else {
+          alert('Invalid admin credentials. Use admin/admin123 for demo.');
+        }
+      } else if (userType === 'user') {
+        // User credentials check (simplified)
+        if (username === 'user' && password === 'user123') {
+          alert('User login successful!');
+          window.location.href = 'customer-portal.html';
+        } else {
+          alert('Invalid user credentials. Use user/user123 for demo.');
+        }
+      }
+    });
+  </script>
 
 </body>
 

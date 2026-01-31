@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Manual Payment - EazyMovers</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+  <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
+
+  <style>
+    .bank-info-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 15px;
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+    
+    .bank-info-item {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      backdrop-filter: blur(10px);
+    }
+    
+    .bank-info-item:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+      transition: all 0.3s ease;
+    }
+    
+    .instruction-step {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      border-left: 4px solid #007bff;
+    }
+    
+    .step-number {
+      background: #007bff;
+      color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      flex-shrink: 0;
+    }
+    
+    .payment-form-section {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    
+    .form-control:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    
+    .upload-area {
+      border: 2px dashed #007bff;
+      border-radius: 10px;
+      padding: 40px;
+      text-align: center;
+      background-color: #f8f9fa;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .upload-area:hover {
+      background-color: #e9ecef;
+      border-color: #0056b3;
+    }
+    
+    .upload-area.dragover {
+      background-color: #e3f2fd;
+      border-color: #1976d2;
+    }
+    
+    .file-preview {
+      margin-top: 15px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      display: none;
+    }
+    
+    .status-message {
+      display: none;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    
+    .status-pending {
+      background: #fff3cd;
+      border: 1px solid #ffeaa7;
+      color: #856404;
+    }
+    
+    .status-success {
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+    }
+    
+    .status-error {
+      background: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+    }
+    
+    .payment-status-badge {
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    
+    .status-pending-badge {
+      background: #fff3cd;
+      color: #856404;
+    }
+    
+    .status-approved-badge {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .status-rejected-badge {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    
+    .copy-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .copy-btn.copied {
+      background: #28a745;
+      border-color: #28a745;
+    }
+    
+    .required-field::after {
+      content: " *";
+      color: #dc3545;
+    }
+    
+    .form-section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #333;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 10px;
+    }
+    
+    .payment-amount-display {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #007bff;
+      text-align: center;
+      margin: 20px 0;
+    }
+    
+    @media (max-width: 768px) {
+      .bank-info-card {
+        padding: 20px;
+      }
+      
+      .payment-form-section {
+        padding: 20px;
+      }
+      
+      .instruction-step {
+        flex-direction: column;
+      }
+      
+      .step-number {
+        margin-bottom: 10px;
+        margin-right: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="customer-portal.html" class="logo d-flex align-items-center">
+        <img src="assets/img/logo.png" alt="">
+        <span class="d-none d-lg-block">EazyMovers</span>
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+
+    <div class="search-bar">
+      <form class="search-form d-flex align-items-center" method="POST" action="#">
+        <input type="text" name="query" placeholder="Search..." title="Enter search keyword">
+        <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+      </form>
+    </div><!-- End Search Bar -->
+
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+
+        <li class="nav-item dropdown">
+          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+            <i class="bi bi-bell"></i>
+            <span class="badge bg-primary badge-number">3</span>
+          </a><!-- End Notification Icon -->
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+            <li class="dropdown-header">
+              You have 3 new notifications
+              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-credit-card text-primary"></i>
+              <div>
+                <h4>Payment Received</h4>
+                <p>Your manual payment has been approved</p>
+                <p>2 hours ago</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-file-invoice text-warning"></i>
+              <div>
+                <h4>Payment Pending</h4>
+                <p>Your payment is awaiting verification</p>
+                <p>5 hours ago</p>
+              </div>
+            </li>
+          </ul><!-- End Notification Dropdown Items -->
+        </li><!-- End Notification Nav -->
+
+        <li class="nav-item dropdown pe-3">
+
+          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+            <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+            <span class="d-none d-md-block dropdown-toggle ps-2">John Doe</span>
+          </a><!-- End Profile Iamge Icon -->
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+            <li class="dropdown-header">
+              <h6>John Doe</h6>
+              <span>Customer</span>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="customer-portal.html">
+                <i class="bi bi-house"></i>
+                <span>Back to Portal</span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                <i class="bi bi-person"></i>
+                <span>My Profile</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="#">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Sign Out</span>
+              </a>
+            </li>
+          </ul><!-- End Profile Dropdown Items -->
+        </li><!-- End Profile Nav -->
+
+      </ul>
+    </nav><!-- End Icons Navigation -->
+
+  </header><!-- End Header -->
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Manual Payment</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="customer-portal.html">Customer Portal</a></li>
+          <li class="breadcrumb-item active">Manual Payment</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <div class="col-12">
+          
+          <!-- Bank Information Section -->
+          <div class="bank-info-card">
+            <h3 class="text-center mb-4">
+              <i class="bi bi-bank me-2"></i>Bank Transfer Details
+            </h3>
+            
+            <div class="bank-info-item">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1">Bank Name</h6>
+                  <h5>First National Bank</h5>
+                </div>
+                <button class="copy-btn" onclick="copyToClipboard('First National Bank', this)">
+                  <i class="bi bi-clipboard"></i> Copy
+                </button>
+              </div>
+            </div>
+
+            <div class="bank-info-item">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1">Account Holder Name</h6>
+                  <h5>EazyMovers Logistics Ltd</h5>
+                </div>
+                <button class="copy-btn" onclick="copyToClipboard('EazyMovers Logistics Ltd', this)">
+                  <i class="bi bi-clipboard"></i> Copy
+                </button>
+              </div>
+            </div>
+
+            <div class="bank-info-item">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1">Account Number</h6>
+                  <h5>1234567890</h5>
+                </div>
+                <button class="copy-btn" onclick="copyToClipboard('1234567890', this)">
+                  <i class="bi bi-clipboard"></i> Copy
+                </button>
+              </div>
+            </div>
+
+            <div class="bank-info-item">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1">Branch Code</h6>
+                  <h5>001-255</h5>
+                </div>
+                <button class="copy-btn" onclick="copyToClipboard('001-255', this)">
+                  <i class="bi bi-clipboard"></i> Copy
+                </button>
+              </div>
+            </div>
+
+            <div class="bank-info-item">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1">Swift Code</h6>
+                  <h5>FIRNZAJJ</h5>
+                </div>
+                <button class="copy-btn" onclick="copyToClipboard('FIRNZAJJ', this)">
+                  <i class="bi bi-clipboard"></i> Copy
+                </button>
+              </div>
+            </div>
+
+            <div class="alert alert-light mt-3">
+              <i class="bi bi-info-circle me-2"></i>
+              <strong>Important:</strong> Please transfer the exact amount to the bank account above and save your transaction/reference number for verification.
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-lg-6">
+          
+          <!-- Payment Instructions -->
+          <div class="payment-form-section">
+            <h4 class="form-section-title">
+              <i class="bi bi-list-ol me-2"></i>Payment Instructions
+            </h4>
+            
+            <div class="instruction-step">
+              <div class="step-number">1</div>
+              <div>
+                <h6>Transfer the Required Amount</h6>
+                <p class="mb-0">Transfer the exact amount shown below to the provided bank account using your preferred banking method (online banking, mobile app, or bank visit).</p>
+              </div>
+            </div>
+
+            <div class="instruction-step">
+              <div class="step-number">2</div>
+              <div>
+                <h6>Save Transaction Details</h6>
+                <p class="mb-0">After making the payment, save the transaction/reference number from your bank confirmation. This is usually found in your receipt or transaction history.</p>
+              </div>
+            </div>
+
+            <div class="instruction-step">
+              <div class="step-number">3</div>
+              <div>
+                <h6>Take Payment Screenshot</h6>
+                <p class="mb-0">Take a clear screenshot or photo of your payment confirmation, transaction receipt, or bank statement showing the payment details.</p>
+              </div>
+            </div>
+
+            <div class="instruction-step">
+              <div class="step-number">4</div>
+              <div>
+                <h6>Submit Payment Proof</h6>
+                <p class="mb-0">Fill out the payment submission form below, upload your payment screenshot, and submit for admin verification.</p>
+              </div>
+            </div>
+
+            <div class="payment-amount-display">
+              Amount to Pay: $<span id="paymentAmount">450.00</span>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="col-lg-6">
+          
+          <!-- Payment Submission Form -->
+          <div class="payment-form-section">
+            <h4 class="form-section-title">
+              <i class="bi bi-file-earmark-text me-2"></i>Payment Submission Form
+            </h4>
+            
+            <form id="paymentForm" novalidate>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="fullName" class="form-label required-field">Full Name</label>
+                  <input type="text" class="form-control" id="fullName" name="fullName" required>
+                  <div class="invalid-feedback">Please enter your full name</div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="email" class="form-label required-field">Email Address</label>
+                  <input type="email" class="form-control" id="email" name="email" required>
+                  <div class="invalid-feedback">Please enter a valid email address</div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="phone" class="form-label required-field">Phone Number</label>
+                  <input type="tel" class="form-control" id="phone" name="phone" required>
+                  <div class="invalid-feedback">Please enter your phone number</div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="amount" class="form-label required-field">Amount Paid ($)</label>
+                  <input type="number" class="form-control" id="amount" name="amount" step="0.01" min="0.01" required>
+                  <div class="invalid-feedback">Please enter the amount paid</div>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="transactionNumber" class="form-label required-field">Transaction / Reference Number</label>
+                <input type="text" class="form-control" id="transactionNumber" name="transactionNumber" required>
+                <div class="invalid-feedback">Please enter the transaction or reference number</div>
+              </div>
+
+              <div class="mb-3">
+                <label for="paymentProof" class="form-label required-field">Upload Payment Screenshot</label>
+                <div class="upload-area" id="uploadArea">
+                  <i class="bi bi-cloud-upload" style="font-size: 3rem; color: #007bff;"></i>
+                  <h6 class="mt-3">Click to upload or drag and drop</h6>
+                  <p class="text-muted">PNG, JPG, JPEG, PDF (MAX. 5MB)</p>
+                  <input type="file" id="paymentProof" name="paymentProof" style="display: none;" accept=".png,.jpg,.jpeg,.pdf">
+                </div>
+                <div class="file-preview" id="filePreview">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <i class="bi bi-file-earmark-image me-2"></i>
+                      <span id="fileName"></span>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeFile()">
+                      <i class="bi bi-trash"></i> Remove
+                    </button>
+                  </div>
+                </div>
+                <div class="invalid-feedback">Please upload payment proof</div>
+              </div>
+
+              <div class="mb-3">
+                <label for="notes" class="form-label">Additional Notes (Optional)</label>
+                <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Any additional information about your payment..."></textarea>
+              </div>
+
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">
+                  <i class="bi bi-send me-2"></i>Submit Payment for Verification
+                </button>
+              </div>
+            </form>
+
+            <!-- Status Message -->
+            <div class="status-message" id="statusMessage">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-clock-history me-3" style="font-size: 1.5rem;"></i>
+                <div>
+                  <h6 class="mb-1">Payment Submitted Successfully!</h6>
+                  <p class="mb-0">Your payment has been submitted and is pending admin verification. You will receive a notification once it's reviewed.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Payment Status Section -->
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <i class="bi bi-clipboard-check me-2"></i>Payment History
+              </h5>
+              
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Amount</th>
+                      <th>Transaction #</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Jan 30, 2024</td>
+                      <td>$450.00</td>
+                      <td>TXN123456789</td>
+                      <td><span class="payment-status-badge status-approved-badge">Approved</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary">
+                          <i class="bi bi-eye"></i> View
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Jan 28, 2024</td>
+                      <td>$350.00</td>
+                      <td>TXN987654321</td>
+                      <td><span class="payment-status-badge status-pending-badge">Pending</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary">
+                          <i class="bi bi-eye"></i> View
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Jan 25, 2024</td>
+                      <td>$200.00</td>
+                      <td>TXN456789123</td>
+                      <td><span class="payment-status-badge status-rejected-badge">Rejected</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary">
+                          <i class="bi bi-eye"></i> View
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+    <div class="copyright">
+      &copy; Copyright <strong><span>EazyMovers</span></strong>. All Rights Reserved
+    </div>
+    <div class="credits">
+      Designed by <a href="#">EazyMovers Team</a>
+    </div>
+  </footer><!-- End Footer -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/chart.js/chart.umd.js"></script>
+  <script src="assets/vendor/echarts/echarts.min.js"></script>
+  <script src="assets/vendor/quill/quill.js"></script>
+  <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="assets/vendor/tinymce/tinymce.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="assets/js/main.js"></script>
+
+  <script>
+    // Copy to clipboard functionality
+    function copyToClipboard(text, button) {
+      navigator.clipboard.writeText(text).then(function() {
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="bi bi-check"></i> Copied!';
+        button.classList.add('copied');
+        
+        setTimeout(function() {
+          button.innerHTML = originalText;
+          button.classList.remove('copied');
+        }, 2000);
+      }).catch(function(err) {
+        console.error('Failed to copy: ', err);
+      });
+    }
+
+    // File upload functionality
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('paymentProof');
+    const filePreview = document.getElementById('filePreview');
+    const fileName = document.getElementById('fileName');
+
+    uploadArea.addEventListener('click', function() {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        if (file.size > 5 * 1024 * 1024) {
+          alert('File size must be less than 5MB');
+          fileInput.value = '';
+          return;
+        }
+        
+        const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'];
+        if (!allowedTypes.includes(file.type)) {
+          alert('Only PNG, JPG, JPEG, and PDF files are allowed');
+          fileInput.value = '';
+          return;
+        }
+        
+        fileName.textContent = file.name;
+        filePreview.style.display = 'block';
+        uploadArea.style.display = 'none';
+      }
+    });
+
+    function removeFile() {
+      fileInput.value = '';
+      filePreview.style.display = 'none';
+      uploadArea.style.display = 'block';
+    }
+
+    // Drag and drop functionality
+    uploadArea.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      this.classList.add('dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', function(e) {
+      e.preventDefault();
+      this.classList.remove('dragover');
+    });
+
+    uploadArea.addEventListener('drop', function(e) {
+      e.preventDefault();
+      this.classList.remove('dragover');
+      
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        fileInput.files = files;
+        const event = new Event('change', { bubbles: true });
+        fileInput.dispatchEvent(event);
+      }
+    });
+
+    // Form validation and submission
+    const paymentForm = document.getElementById('paymentForm');
+    const statusMessage = document.getElementById('statusMessage');
+
+    paymentForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      if (!paymentForm.checkValidity()) {
+        e.stopPropagation();
+        paymentForm.classList.add('was-validated');
+        return;
+      }
+
+      // Show loading state
+      const submitBtn = paymentForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Processing...';
+      submitBtn.disabled = true;
+
+      // Simulate form submission
+      setTimeout(function() {
+        // Show success message
+        statusMessage.className = 'status-message status-pending';
+        statusMessage.style.display = 'block';
+        
+        // Reset form
+        paymentForm.reset();
+        paymentForm.classList.remove('was-validated');
+        removeFile();
+        
+        // Reset button
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        
+        // Scroll to status message
+        statusMessage.scrollIntoView({ behavior: 'smooth' });
+        
+        // Store payment data (in real app, this would be sent to server)
+        const paymentData = {
+          fullName: document.getElementById('fullName').value,
+          email: document.getElementById('email').value,
+          phone: document.getElementById('phone').value,
+          amount: document.getElementById('amount').value,
+          transactionNumber: document.getElementById('transactionNumber').value,
+          notes: document.getElementById('notes').value,
+          timestamp: new Date().toISOString(),
+          status: 'pending'
+        };
+        
+        console.log('Payment submitted:', paymentData);
+        
+        // In a real application, you would send this data to your server
+        // fetch('/api/payments', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   body: JSON.stringify(paymentData)
+        // });
+        
+      }, 2000);
+    });
+
+    // Set payment amount from URL parameter or default
+    const urlParams = new URLSearchParams(window.location.search);
+    const amount = urlParams.get('amount') || '450.00';
+    document.getElementById('paymentAmount').textContent = amount;
+    document.getElementById('amount').value = amount;
+
+    // Form field validation on input
+    document.getElementById('fullName').addEventListener('input', function() {
+      this.setCustomValidity('');
+    });
+
+    document.getElementById('email').addEventListener('input', function() {
+      this.setCustomValidity('');
+    });
+
+    document.getElementById('phone').addEventListener('input', function() {
+      this.setCustomValidity('');
+    });
+
+    document.getElementById('amount').addEventListener('input', function() {
+      this.setCustomValidity('');
+    });
+
+    document.getElementById('transactionNumber').addEventListener('input', function() {
+      this.setCustomValidity('');
+    });
+  </script>
+
+</body>
+
+</html>

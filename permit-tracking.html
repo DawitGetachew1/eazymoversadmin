@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Permit & Documentation Tracking - EazyAdmin</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+  <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
+
+  <style>
+    .doc-card {
+      transition: transform 0.2s;
+      border: none;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .doc-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+    .doc-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    .permit-icon {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+    }
+    .customs-icon {
+      background: linear-gradient(135deg, #f093fb, #f5576c);
+      color: white;
+    }
+    .lading-icon {
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      color: white;
+    }
+    .airway-icon {
+      background: linear-gradient(135deg, #43e97b, #38f9d7);
+      color: white;
+    }
+    .expiry-icon {
+      background: linear-gradient(135deg, #fa709a, #fee140);
+      color: white;
+    }
+    .notification-icon {
+      background: linear-gradient(135deg, #30cfd0, #330867);
+      color: white;
+    }
+    .doc-type-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .status-valid {
+      background: #d4edda;
+      color: #155724;
+    }
+    .status-expiring {
+      background: #fff3cd;
+      color: #856404;
+    }
+    .status-expired {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    .status-pending {
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+    .doc-table {
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .doc-table thead {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+    }
+    .doc-row:hover {
+      background-color: #f8f9fa;
+      cursor: pointer;
+    }
+    .expiry-section {
+      background: linear-gradient(135deg, #fa709a, #fee140);
+      color: white;
+      border-radius: 15px;
+      padding: 25px;
+    }
+    .notification-section {
+      background: linear-gradient(135deg, #30cfd0, #330867);
+      color: white;
+      border-radius: 15px;
+      padding: 25px;
+    }
+    .stats-number {
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .days-remaining {
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+    }
+    .days-critical {
+      background: #dc3545;
+      color: white;
+    }
+    .days-warning {
+      background: #ffc107;
+      color: #212529;
+    }
+    .days-safe {
+      background: #28a745;
+      color: white;
+    }
+    .action-buttons .btn {
+      margin-right: 5px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="index.html" class="logo d-flex align-items-center">
+        <img src="assets/img/logo.png" alt="">
+        <span class="d-none d-lg-block">EazyAdmin</span>
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+
+    <div class="search-bar">
+      <form class="search-form d-flex align-items-center" method="POST" action="#">
+        <input type="text" name="query" placeholder="Search permits, documents..." title="Enter search keyword">
+        <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+      </form>
+    </div><!-- End Search Bar -->
+
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+
+        <li class="nav-item dropdown">
+          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+            <i class="bi bi-bell"></i>
+            <span class="badge bg-primary badge-number">8</span>
+          </a>
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+            <li class="dropdown-header">
+              You have 8 new notifications
+              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-exclamation-triangle text-warning"></i>
+              <div>
+                <h4>Permit Expiring Soon</h4>
+                <p>Export permit #EXP-2024-001 expires in 5 days</p>
+                <p>2 hours ago</p>
+              </div>
+            </li>
+          </ul>
+        </li>
+
+        <li class="nav-item dropdown pe-3">
+          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+            <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+            <span class="d-none d-md-block dropdown-toggle ps-2">Admin</span>
+          </a>
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+            <li class="dropdown-header">
+              <h6>Admin User</h6>
+              <span>Administrator</span>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                <i class="bi bi-person"></i>
+                <span>My Profile</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="#">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Sign Out</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+      </ul>
+    </nav>
+
+  </header>
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="index.html">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="payment-tracking.html">
+          <i class="bi bi-credit-card"></i>
+          <span>Payment Tracking</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="permit-tracking.html">
+          <i class="bi bi-file-earmark-text"></i>
+          <span>Permit & Documents</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#components-nav">
+          <i class="bi bi-truck"></i><span>Shipments</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="components-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="#">
+              <i class="bi bi-circle"></i><span>All Shipments</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="bi bi-circle"></i><span>Active Shipments</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+    </ul>
+
+  </aside>
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Permit & Documentation Tracking</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item active">Permit & Documents</li>
+        </ol>
+      </nav>
+    </div>
+
+    <section class="section dashboard">
+      
+      <!-- Document Statistics Cards -->
+      <div class="row">
+        <div class="col-lg-2 col-md-4 col-6 mb-3">
+          <div class="card doc-card">
+            <div class="card-body">
+              <div class="d-flex flex-column align-items-center text-center">
+                <div class="doc-icon permit-icon mb-3">
+                  <i class="bi bi-file-earmark-check"></i>
+                </div>
+                <h6 class="card-title mb-1">Back Permits</h6>
+                <div class="stats-number text-primary">18</div>
+                <small class="text-muted">Active</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-6 mb-3">
+          <div class="card doc-card">
+            <div class="card-body">
+              <div class="d-flex flex-column align-items-center text-center">
+                <div class="doc-icon customs-icon mb-3">
+                  <i class="bi bi-globe"></i>
+                </div>
+                <h6 class="card-title mb-1">Export Permits</h6>
+                <div class="stats-number text-success">24</div>
+                <small class="text-muted">Active</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-6 mb-3">
+          <div class="card doc-card">
+            <div class="card-body">
+              <div class="d-flex flex-column align-items-center text-center">
+                <div class="doc-icon customs-icon mb-3">
+                  <i class="bi bi-box-arrow-in-down"></i>
+                </div>
+                <h6 class="card-title mb-1">Import Permits</h6>
+                <div class="stats-number text-info">15</div>
+                <small class="text-muted">Active</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-6 mb-3">
+          <div class="card doc-card">
+            <div class="card-body">
+              <div class="d-flex flex-column align-items-center text-center">
+                <div class="doc-icon customs-icon mb-3">
+                  <i class="bi bi-file-earmark-medical"></i>
+                </div>
+                <h6 class="card-title mb-1">Customs Forms</h6>
+                <div class="stats-number text-danger">32</div>
+                <small class="text-muted">Submitted</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-6 mb-3">
+          <div class="card doc-card">
+            <div class="card-body">
+              <div class="d-flex flex-column align-items-center text-center">
+                <div class="doc-icon lading-icon mb-3">
+                  <i class="bi bi-ship"></i>
+                </div>
+                <h6 class="card-title mb-1">Bills of Lading</h6>
+                <div class="stats-number text-warning">28</div>
+                <small class="text-muted">Active</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-6 mb-3">
+          <div class="card doc-card">
+            <div class="card-body">
+              <div class="d-flex flex-column align-items-center text-center">
+                <div class="doc-icon airway-icon mb-3">
+                  <i class="bi bi-airplane"></i>
+                </div>
+                <h6 class="card-title mb-1">Airway Bills</h6>
+                <div class="stats-number text-info">21</div>
+                <small class="text-muted">Active</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Back Permits Section -->
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title">
+                  <i class="bi bi-file-earmark-check text-primary me-2"></i>Back Permits
+                </h5>
+                <div>
+                  <button class="btn btn-sm btn-primary">
+                    <i class="bi bi-upload"></i> Upload New
+                  </button>
+                  <button class="btn btn-sm btn-success">
+                    <i class="bi bi-download"></i> Export
+                  </button>
+                </div>
+              </div>
+              
+              <div class="table-responsive">
+                <table class="table doc-table">
+                  <thead>
+                    <tr>
+                      <th>Permit Number</th>
+                      <th>Client</th>
+                      <th>Issue Date</th>
+                      <th>Expiry Date</th>
+                      <th>Status</th>
+                      <th>Days Remaining</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="doc-row">
+                      <td><strong>BP-2024-018</strong></td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <img src="assets/img/profile-img.jpg" class="rounded-circle me-2" width="32" height="32">
+                          <div>
+                            <div>John Doe</div>
+                            <small class="text-muted">john@example.com</small>
+                          </div>
+                        </div>
+                      </td>
+                      <td>Jan 15, 2024</td>
+                      <td>Apr 15, 2024</td>
+                      <td><span class="status-badge status-valid">Valid</span></td>
+                      <td><span class="days-remaining days-safe">75 days</span></td>
+                      <td>
+                        <div class="action-buttons">
+                          <button class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i>
+                          </button>
+                          <button class="btn btn-sm btn-outline-success">
+                            <i class="bi bi-download"></i>
+                          </button>
+                          <button class="btn btn-sm btn-outline-warning">
+                            <i class="bi bi-bell"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="doc-row">
+                      <td><strong>BP-2024-017</strong></td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <img src="assets/img/profile-img.jpg" class="rounded-circle me-2" width="32" height="32">
+                          <div>
+                            <div>Jane Smith</div>
+                            <small class="text-muted">jane@example.com</small>
+                          </div>
+                        </div>
+                      </td>
+                      <td>Dec 20, 2023</td>
+                      <td>Feb 5, 2024</td>
+                      <td><span class="status-badge status-expiring">Expiring Soon</span></td>
+                      <td><span class="days-remaining days-warning">5 days</span></td>
+                      <td>
+                        <div class="action-buttons">
+                          <button class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i>
+                          </button>
+                          <button class="btn btn-sm btn-outline-success">
+                            <i class="bi bi-download"></i>
+                          </button>
+                          <button class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-exclamation-triangle"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Export/Import Permits Section -->
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title">
+                  <i class="bi bi-globe text-success me-2"></i>Export Permits
+                </h5>
+                <button class="btn btn-sm btn-success">
+                  <i class="bi bi-plus"></i> Add New
+                </button>
+              </div>
+              
+              <div class="table-responsive">
+                <table class="table doc-table">
+                  <thead>
+                    <tr>
+                      <th>Permit #</th>
+                      <th>Destination</th>
+                      <th>Expiry</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="doc-row">
+                      <td><strong>EXP-2024-024</strong></td>
+                      <td>USA</td>
+                      <td>Mar 10, 2024</td>
+                      <td><span class="status-badge status-valid">Valid</span></td>
+                      <td>
+                        <div class="action-buttons">
+                          <button class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title">
+                  <i class="bi bi-box-arrow-in-down text-info me-2"></i>Import Permits
+                </h5>
+                <button class="btn btn-sm btn-info">
+                  <i class="bi bi-plus"></i> Add New
+                </button>
+              </div>
+              
+              <div class="table-responsive">
+                <table class="table doc-table">
+                  <thead>
+                    <tr>
+                      <th>Permit #</th>
+                      <th>Origin</th>
+                      <th>Expiry</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="doc-row">
+                      <td><strong>IMP-2024-015</strong></td>
+                      <td>China</td>
+                      <td>Mar 25, 2024</td>
+                      <td><span class="status-badge status-valid">Valid</span></td>
+                      <td>
+                        <div class="action-buttons">
+                          <button class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Expiry Reminders Section -->
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="expiry-section">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="text-white mb-0">
+                <i class="bi bi-clock-history me-2"></i>Expiry Reminders
+              </h5>
+              <button class="btn btn-light">
+                <i class="bi bi-gear"></i> Configure
+              </button>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-3">
+                <div class="text-center">
+                  <h6 class="text-white">Expiring This Week</h6>
+                  <div class="stats-number">3</div>
+                  <small>Documents need attention</small>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="text-center">
+                  <h6 class="text-white">Expiring This Month</h6>
+                  <div class="stats-number">8</div>
+                  <small>Documents need renewal</small>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="text-center">
+                  <h6 class="text-white">Already Expired</h6>
+                  <div class="stats-number">2</div>
+                  <small>Require immediate action</small>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="text-center">
+                  <h6 class="text-white">Reminders Sent</h6>
+                  <div class="stats-number">24</div>
+                  <small>This week</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Automated Notifications Section -->
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="notification-section">
+            <h5 class="text-white mb-3">
+              <i class="bi bi-bell-fill me-2"></i>Automated Notifications
+            </h5>
+            
+            <div class="row">
+              <div class="col-md-4">
+                <div class="text-center">
+                  <h6 class="text-white">Notify You</h6>
+                  <div class="stats-number">45</div>
+                  <small>Notifications sent</small>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="text-center">
+                  <h6 class="text-white">Notify Team</h6>
+                  <div class="stats-number">32</div>
+                  <small>Team alerts sent</small>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="text-center">
+                  <h6 class="text-white">Notify Clients</h6>
+                  <div class="stats-number">28</div>
+                  <small>Client notifications</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col-md-4">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="notifyYou" checked>
+                  <label class="form-check-label text-white" for="notifyYou">
+                    Email notifications to admin
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="notifyTeam" checked>
+                  <label class="form-check-label text-white" for="notifyTeam">
+                    Notify team members
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="notifyClients" checked>
+                  <label class="form-check-label text-white" for="notifyClients">
+                    Notify clients
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>
